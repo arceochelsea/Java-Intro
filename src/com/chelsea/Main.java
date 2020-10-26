@@ -6,42 +6,33 @@ import java.text.NumberFormat;
 public class Main {
 
     public static void main(String[] args) {
+        //Got rid of while loops and created a readNumber method that will be used 3 times, every time a different value is read.
 
-        //these were removed out of the code block so it is able to be accessed globally
-        int principal = 0;
-        float annualInterest = 0;
-        byte years = 0;
-
-        //created scanner obj & imported up top automatically as well
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {  //infinite loops
-            System.out.print("Principle: ");
-            principal = scanner.nextInt();
-            if (principal >= 1000 && principal <= 1_000_000) //if valid value break if not print error
-                break;
-            System.out.println("Enter a value between 1000 and 1000000");
-        }
-
-        while (true) {
-            System.out.print("Annual Interest Rate: ");
-            annualInterest = scanner.nextFloat();
-            if (annualInterest >= 1 && annualInterest <= 30)//if valid value, calculate monthlyinterest then break out of the loop if not print error
-                break;
-            System.out.println("Enter a value between 1 and 30");
-        }
-
-        while (true) {
-            System.out.print("Period: (Years): ");
-            years = scanner.nextByte();
-            if (years >= 1 && years <= 30) //if valid calculate numofpayments then break, if not print error
-                break;
-            System.out.println("Enter a value between 1 and 30.");
-        }
+        //this replaces all the while loops because it uses the readNumber method and just takes arguments from the user
+        int principal = (int)readNumber("Principal: ", 1000, 1_000_000);
+        float annualInterest = (float) readNumber("Annual Interest Rate: ", 1, 30);
+        byte years = (byte) readNumber("Period (Years): ", 1, 30);
 
         double mortgage = calculateMortgage(principal, annualInterest, years);
         String mortgageFormatted = NumberFormat.getCurrencyInstance().format(mortgage);
         System.out.println("Mortgage: " + mortgageFormatted);
+    }
+
+    public static double readNumber(String prompt, double min, double max) {
+        //Scanner obj moved outside of code block
+        //1 and 30 were replaced with params min and max so numbers are not hard coded
+        //value is now any of the values user puts in for principal, annualInterest, years
+
+        Scanner scanner = new Scanner(System.in);
+        double value;
+        while (true) {
+            System.out.print(prompt);
+            value = scanner.nextFloat();
+            if (value >= min && value <= max)
+                break;
+            System.out.println("Enter a value between " + min + " and " + max);
+        }
+        return value;
     }
 
     public static double calculateMortgage(
@@ -49,7 +40,6 @@ public class Main {
             float annualInterest,
             byte years) {
 
-        //all the code to calculate the mortgage is in one location now
         final byte monthsInAYear = 12;
         final byte percentage = 100;
 
